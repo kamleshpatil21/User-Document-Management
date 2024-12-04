@@ -7,6 +7,8 @@ import { User } from '../auth/entities/user.entity';
 import * as bcrypt from 'bcrypt';
 import { UnauthorizedException } from '@nestjs/common';
 
+jest.mock('bcrypt'); // Global mock for bcrypt
+
 describe('AuthService', () => {
   let authService: AuthService;
   let userRepository: Repository<User>;
@@ -51,7 +53,7 @@ describe('AuthService', () => {
       jest.spyOn(userRepository, 'findOne').mockResolvedValue(null);
       jest.spyOn(userRepository, 'create').mockReturnValue({} as User);
       jest.spyOn(userRepository, 'save').mockResolvedValue({ id: 1, email: 'test@test.com' } as User);
-      jest.spyOn(bcrypt, 'hash').mockResolvedValue('hashedPassword');
+      (bcrypt.hash as jest.Mock).mockResolvedValue('hashedPassword');
 
       const result = await authService.register({ email: 'test@test.com', password: '123456', role: 'viewer' });
       expect(bcrypt.hash).toHaveBeenCalledWith('123456', 10);
@@ -71,20 +73,27 @@ describe('AuthService', () => {
     it('should throw an error if the password is invalid', async () => {
       const mockUser = { email: 'test@test.com', password: 'hashedPassword' } as User;
       jest.spyOn(userRepository, 'findOne').mockResolvedValue(mockUser);
-      jest.spyOn(bcrypt, 'compare').mockResolvedValue(false);
+      (bcrypt.compare as jest.Mock).mockResolvedValue(false);
 
       await expect(authService.login({ email: 'test@test.com', password: 'wrongPassword' })).rejects.toThrow(
         UnauthorizedException,
       );
     });
 
-    it('should return a JWT token if login is successful', async () => {
-      const mockUser = { id: 1, email: 'test@test.com', password: 'hashedPassword', role: 'viewer' } as User;
-      jest.spyOn(userRepository, 'findOne').mockResolvedValue(mockUser);
-      jest.spyOn(bcrypt, 'compare').mockResolvedValue(true);
-
-      const result = await authService.login({ email: 'test@test.com', password: '123456' });
-      expect(result).toBe('mockToken');
+    describe('login', () => {
+      it('should return a JWT token if login is successful', async () => {
+        const mockUser = { id: 1, email: 'test@test.com', password: 'hashedPassword', role: 'viewer' } as User;
+    
+        jest.spyOn(userRepository, 'findOne').mockResolvedValue(mockUser);
+        (bcrypt.compare as jest.Mock).mockResolvedValue(true);
+    
+        const result = await authService.login({ email: 'test@test.com', password: '123456' });
+        
+        // Update the expected payload to use "sub" instead of "id"
+        expect(jwtService.sign).toHaveBeenCalledWith({ sub: 1, role: 'viewer' });
+        expect(result).toBe('mockToken');
+      });
     });
+    
   });
 });

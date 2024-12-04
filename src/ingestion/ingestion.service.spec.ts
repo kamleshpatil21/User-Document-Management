@@ -1,116 +1,118 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { IngestionService } from './ingestion.service';
 import { EntityManager } from 'typeorm';
-import { getRepositoryToken } from '@nestjs/typeorm';
+import { IngestionService } from './ingestion.service';
 import { Ingestion } from './entities/ingestion.entity';
-import { Redis } from 'ioredis';
 import axios from 'axios';
 
-// Mocking external dependencies
 jest.mock('axios');
-jest.mock('ioredis');
 
-describe('IngestionService (Unit Test)', () => {
+describe('IngestionService', () => {
   let service: IngestionService;
-  let redis: Redis;
-  let entityManager: EntityManager;
+  let entityManagerMock: jest.Mocked<EntityManager>;
 
   beforeEach(async () => {
+    entityManagerMock = {
+      findOne: jest.fn(),
+      save: jest.fn(),
+      find: jest.fn(),
+    } as unknown as jest.Mocked<EntityManager>;
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         IngestionService,
-        {
-          provide: getRepositoryToken(Ingestion),
-          useValue: {
-            create: jest.fn().mockReturnValue({}),
-            save: jest.fn().mockResolvedValue({ id: 1, status: 'In Progress' }),
-            findOne: jest.fn().mockResolvedValue({ id: 1, status: 'In Progress' }),
-            find: jest.fn().mockResolvedValue([{ id: 1, status: 'In Progress' }]),
-          },
-        },
-        {
-          provide: EntityManager,
-          useValue: {
-            create: jest.fn(),
-            save: jest.fn(),
-            findOne: jest.fn(),
-            find: jest.fn(),
-          },
-        },
-        {
-          provide: Redis,
-          useValue: {
-            subscribe: jest.fn(),
-            on: jest.fn(),
-          },
-        },
+        { provide: EntityManager, useValue: entityManagerMock },
       ],
     }).compile();
 
     service = module.get<IngestionService>(IngestionService);
-    redis = module.get<Redis>(Redis);
-    entityManager = module.get<EntityManager>(EntityManager);
+
+    jest.spyOn(console, 'log').mockImplementation(() => {});
+    jest.spyOn(console, 'error').mockImplementation(() => {});
   });
 
-  it('should be defined', () => {
-    expect(service).toBeDefined();
+  afterEach(() => {
+    jest.restoreAllMocks();
   });
 
-  it('should subscribe to Redis channel on module init', async () => {
-    const subscribeSpy = jest.spyOn(redis, 'subscribe');
-    await service.onModuleInit();
-    expect(subscribeSpy).toHaveBeenCalledWith('ingestion_channel', expect.any(Function));
-  });
+  describe('triggerIngestionOperation', () => {
+    it('should log and return success when API call succeeds', async () => {
+      const mockData = { documentId: '123', userId: '456', metadata: {} };
+      (axios.post as jest.Mock).mockResolvedValueOnce({ status: 200 });
 
-  it('should process ingestion message', async () => {
-    const message = JSON.stringify({ documentId: 1, userId: 1, metadata: {} });
-    const processIngestionMessageSpy = jest.spyOn(service, 'processIngestionMessage');
-    await service.onModuleInit(); // Trigger subscription
-    redis.emit('message', 'ingestion_channel', message);
-    expect(processIngestionMessageSpy).toHaveBeenCalledWith(message);
-  });
+      const result = await service.triggerIngestionOperation(mockData);
 
-  it('should trigger ingestion operation successfully', async () => {
-    axios.post.mockResolvedValueOnce({ status: 200 });
-    const result = await service['triggerIngestionOperation']({
-      documentId: 1,
-      userId: 1,
-      metadata: {},
+      expect(console.log).toHaveBeenCalledWith('Triggering ingestion operation for document ID:', '123');
+      expect(axios.post).toHaveBeenCalledWith('http://python-service/ingest', mockData);
+      expect(result).toEqual({ success: true, message: 'Ingestion completed successfully' });
     });
-    expect(result.success).toBe(true);
-    expect(axios.post).toHaveBeenCalledWith('http://python-service/ingest', expect.any(Object));
-  });
 
-  it('should trigger ingestion operation failure', async () => {
-    axios.post.mockResolvedValueOnce({ status: 500 });
-    const result = await service['triggerIngestionOperation']({
-      documentId: 1,
-      userId: 1,
-      metadata: {},
+    it('should return failure when API call fails', async () => {
+      const mockData = { documentId: '123', userId: '456', metadata: {} };
+      (axios.post as jest.Mock).mockRejectedValueOnce(new Error('Network error'));
+
+      const result = await service.triggerIngestionOperation(mockData);
+
+      expect(console.error).toHaveBeenCalledWith('Error during ingestion operation:', expect.any(Error));
+      expect(result).toEqual({ success: false, message: 'Ingestion failed due to an error' });
     });
-    expect(result.success).toBe(false);
   });
 
-  it('should retrieve ingestion status', async () => {
-    const findOneSpy = jest.spyOn(entityManager, 'findOne').mockResolvedValueOnce({ id: 1, status: 'Completed' });
-    const result = await service.getIngestionStatus(1);
-    expect(findOneSpy).toHaveBeenCalledWith(Ingestion, { where: { id: 1 } });
-    expect(result.status).toBe('Completed');
+  describe('getIngestionStatus', () => {
+    it('should return the ingestion process if found', async () => {
+      const mockIngestion = { id: 1, status: 'Completed' } as Ingestion;
+      entityManagerMock.findOne.mockResolvedValueOnce(mockIngestion);
+
+      const result = await service.getIngestionStatus(1);
+
+      expect(entityManagerMock.findOne).toHaveBeenCalledWith(Ingestion, { where: { id: 1 } });
+      expect(result).toEqual(mockIngestion);
+    });
+
+    it('should throw an error if ingestion process is not found', async () => {
+      entityManagerMock.findOne.mockResolvedValueOnce(null);
+
+      await expect(service.getIngestionStatus(1)).rejects.toThrow('Ingestion not found');
+    });
   });
 
-  it('should throw error if ingestion status not found', async () => {
-    const findOneSpy = jest.spyOn(entityManager, 'findOne').mockResolvedValueOnce(null);
-    try {
-      await service.getIngestionStatus(999); // Non-existent ID
-    } catch (error) {
-      expect(error.message).toBe('Ingestion not found');
-    }
+  describe('cancelIngestion', () => {
+    it('should mark the ingestion as cancelled', async () => {
+      const mockIngestion = { id: 1, status: 'In Progress' } as Ingestion;
+      entityManagerMock.findOne.mockResolvedValueOnce(mockIngestion);
+
+      await service.cancelIngestion(1);
+
+      expect(entityManagerMock.findOne).toHaveBeenCalledWith(Ingestion, { where: { id: 1 } });
+      expect(mockIngestion.status).toBe('Cancelled');
+      expect(entityManagerMock.save).toHaveBeenCalledWith(mockIngestion);
+    });
+
+    it('should throw an error if ingestion process is not found', async () => {
+      entityManagerMock.findOne.mockResolvedValueOnce(null);
+
+      await expect(service.cancelIngestion(1)).rejects.toThrow('Ingestion not found');
+    });
   });
 
-  it('should cancel an ingestion', async () => {
-    const findOneSpy = jest.spyOn(entityManager, 'findOne').mockResolvedValueOnce({ id: 1, status: 'In Progress' });
-    const saveSpy = jest.spyOn(entityManager, 'save').mockResolvedValueOnce({ id: 1, status: 'Cancelled' });
-    await service.cancelIngestion(1);
-    expect(saveSpy).toHaveBeenCalledWith({ id: 1, status: 'Cancelled' });
+  describe('getAllIngestionProcesses', () => {
+    it('should return all ingestion processes', async () => {
+      const mockIngestions = [
+        { id: 1, status: 'Completed' },
+        { id: 2, status: 'In Progress' },
+      ] as Ingestion[];
+      entityManagerMock.find.mockResolvedValueOnce(mockIngestions);
+
+      const result = await service.getAllIngestionProcesses();
+
+      expect(entityManagerMock.find).toHaveBeenCalledWith(Ingestion);
+      expect(result).toEqual(mockIngestions);
+    });
+
+    it('should throw an error if fetching processes fails', async () => {
+      entityManagerMock.find.mockRejectedValueOnce(new Error('Database error'));
+
+      await expect(service.getAllIngestionProcesses()).rejects.toThrow('Could not fetch ingestion processes');
+      expect(console.error).toHaveBeenCalledWith('Error fetching ingestion processes:', expect.any(Error));
+    });
   });
 });

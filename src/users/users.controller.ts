@@ -1,9 +1,9 @@
-import { Controller, Get, Post, Put, Delete, Param, Body, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Param, Body, UseGuards, BadRequestException } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { Roles } from '../auth/decorator/roles.decorator';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
-import { User } from 'src/auth/entities/user.entity';
+import { User } from '../auth/entities/user.entity';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBody, ApiBearerAuth } from '@nestjs/swagger';
 
 @ApiTags('Users') // Grouping the endpoints under the 'Users' tag in Swagger
@@ -46,7 +46,14 @@ export class UsersController {
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({ status: 403, description: 'Forbidden, admin access required' })
   create(@Body() createUserDto: Partial<User>) {
-    return this.usersService.create(createUserDto);
+
+
+    try {
+      return this.usersService.create(createUserDto);
+    } catch (error) {
+      throw new BadRequestException('Something went wrong');
+    }
+    
   }
 
   /**

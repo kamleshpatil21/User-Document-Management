@@ -24,4 +24,5 @@ export class CreateDocumentDto {
     example: 'uploads/documents/document.pdf',
   })
   path: string;
+  
 }

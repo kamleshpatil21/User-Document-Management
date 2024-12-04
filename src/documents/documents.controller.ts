@@ -16,7 +16,7 @@ import {
   import { FileInterceptor } from '@nestjs/platform-express';
   import { diskStorage } from 'multer';
   import * as path from 'path';
-  import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+  import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
   import { ApiTags, ApiOperation, ApiResponse, ApiBody, ApiBearerAuth } from '@nestjs/swagger';
   
   @ApiTags('Documents') // Swagger Grouping Tag
@@ -57,7 +57,7 @@ import {
      */
     @UseGuards(JwtAuthGuard)
     @ApiBearerAuth()
-    @Post()
+    @Post("/upload")
     @UseInterceptors(
       FileInterceptor('file', {
         storage: diskStorage({
