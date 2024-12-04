@@ -17,7 +17,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.IngestionService = void 0;
 const common_1 = require("@nestjs/common");
-const ioredis_1 = require("ioredis");
 const typeorm_1 = require("@nestjs/typeorm");
 const typeorm_2 = require("typeorm");
 const ingestion_entity_1 = require("./entities/ingestion.entity");
@@ -25,46 +24,6 @@ const axios_1 = __importDefault(require("axios"));
 let IngestionService = class IngestionService {
     constructor(entityManager) {
         this.entityManager = entityManager;
-        this.redis = new ioredis_1.Redis({
-            host: 'localhost',
-            port: 6379,
-        });
-    }
-    async onModuleInit() {
-        this.redis.subscribe('ingestion_channel', (err, count) => {
-            if (err) {
-                console.error('Failed to subscribe to channel:', err);
-                return;
-            }
-            console.log(`Subscribed to ${count} channel(s).`);
-        });
-        this.redis.on('message', async (channel, message) => {
-            if (channel === 'ingestion_channel') {
-                console.log('Received message:', message);
-                await this.processIngestionMessage(message);
-            }
-        });
-    }
-    async processIngestionMessage(message) {
-        try {
-            const data = JSON.parse(message);
-            const { documentId, userId, metadata } = data;
-            console.log(`Processing ingestion for Document ID: ${documentId}, User ID: ${userId}`);
-            const ingestion = this.entityManager.create(ingestion_entity_1.Ingestion, {
-                documentId,
-                userId,
-                metadata,
-                status: 'In Progress',
-            });
-            await this.entityManager.save(ingestion);
-            const ingestionResult = await this.triggerIngestionOperation(data);
-            ingestion.status = ingestionResult.success ? 'Completed' : 'Failed';
-            await this.entityManager.save(ingestion);
-            console.log('Ingestion process completed:', ingestionResult);
-        }
-        catch (error) {
-            console.error('Error processing ingestion message:', error);
-        }
     }
     async triggerIngestionOperation(data) {
         try {

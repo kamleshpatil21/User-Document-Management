@@ -28,7 +28,12 @@ let UsersController = class UsersController {
         return this.usersService.findAll();
     }
     create(createUserDto) {
-        return this.usersService.create(createUserDto);
+        try {
+            return this.usersService.create(createUserDto);
+        }
+        catch (error) {
+            throw new common_1.BadRequestException('Something went wrong');
+        }
     }
     update(id, updates) {
         return this.usersService.update(id, updates);

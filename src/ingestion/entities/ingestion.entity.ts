@@ -11,8 +11,6 @@ export class Ingestion {
   @Column({ default: 'Pending' })
   status: string;
 
-  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-  createdAt: Date;
 
   @Column({ type: 'timestamp', nullable: true })
   completedAt: Date;

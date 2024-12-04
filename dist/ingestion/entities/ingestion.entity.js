@@ -27,10 +27,6 @@ __decorate([
     __metadata("design:type", String)
 ], Ingestion.prototype, "status", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' }),
-    __metadata("design:type", Date)
-], Ingestion.prototype, "createdAt", void 0);
-__decorate([
     (0, typeorm_1.Column)({ type: 'timestamp', nullable: true }),
     __metadata("design:type", Date)
 ], Ingestion.prototype, "completedAt", void 0);
