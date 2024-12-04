@@ -4,8 +4,7 @@ import { UsersService } from './users.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { NotFoundException, BadRequestException } from '@nestjs/common';
-import { CreateUserDto } from '../auth/dto/create-user.dto';
-import { User } from '../auth/entities/user.entity';
+import { CreateUserDataDto } from './dto/create-userdata.dto';
 describe('UsersController', () => {
   let controller: UsersController;
   let service: UsersService;
@@ -44,19 +43,19 @@ describe('UsersController', () => {
 
   describe('create', () => {
     it('should successfully create a user with valid CreateUserDto', async () => {
-      const createUserDto: CreateUserDto = {
-        email: 'user@example.com',
-        password: 'password123',
-        role: 'admin', // optional, can be omitted as well
-      };
+      const createUserDto: CreateUserDataDto ={
+        "name": "kamlesh@examplem",
+        "phoneNumber": "+918618545563",
+        "userId": 6
+      
+      }
 
       const result = {
-        id: 1,
-        email: 'user@example.com',
-        password: 'password123',
-        role: 'admin',
-      };
-
+        "name": "kamlesh@examplem",
+        "phoneNumber": "+918618545563",
+        "userId": 6
+      
+      }
       mockUserService.create.mockResolvedValue(result);
 
       expect(await controller.create(createUserDto)).toBe(result);
@@ -64,11 +63,12 @@ describe('UsersController', () => {
     });
 
     it('should throw an error when email is invalid', async () => {
-      const createUserDto: CreateUserDto = {
-        email: 'invalid-email', // Invalid email
-        password: 'password123',
-        role: 'admin',
-      };
+      const createUserDto: CreateUserDataDto ={
+        "name": "kamlesh@examplem",
+        "phoneNumber": "+918618545563",
+        "userId": 6
+      
+      }
 
       try {
         await controller.create(createUserDto);
@@ -79,11 +79,12 @@ describe('UsersController', () => {
     });
 
     it('should throw an error when password is too short', async () => {
-      const createUserDto: CreateUserDto = {
-        email: 'user@example.com',
-        password: 'short', // Password too short
-        role: 'admin',
-      };
+      const createUserDto: CreateUserDataDto = {
+        "name": "kamlesh@examplem",
+        "phoneNumber": "+918618545563",
+        "userId": 6
+      
+      }
 
       try {
         await controller.create(createUserDto);
@@ -94,11 +95,12 @@ describe('UsersController', () => {
     });
 
     it('should create a user even when role is not provided', async () => {
-      const createUserDto: CreateUserDto = {
-        email: 'user@example.com',
-        password: 'password123',
-        role: undefined, // Role not provided
-      };
+      const createUserDto: CreateUserDataDto = {
+        "name": "kamlesh@examplem",
+        "phoneNumber": "+918618545563",
+        "userId": 6
+      
+      }
 
       const result = {
         id: 1,
@@ -114,11 +116,12 @@ describe('UsersController', () => {
     });
 
     it('should throw an error if there is a problem during user creation', async () => {
-      const createUserDto: CreateUserDto = {
-        email: 'user@example.com',
-        password: 'password123',
-        role: 'admin',
-      };
+      const createUserDto: CreateUserDataDto ={
+        "name": "kamlesh@examplem",
+        "phoneNumber": "+918618545563",
+        "userId": 6
+      
+      }
     
       // Simulate a NestJS exception
       mockUserService.create.mockRejectedValue(

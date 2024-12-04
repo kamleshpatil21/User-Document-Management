@@ -41,7 +41,7 @@ async function bootstrap() {
   );
 
   // Set global prefix for the API
-  app.setGlobalPrefix('api/v1');
+  app.setGlobalPrefix('api');
 
   // Configure Swagger options
   const options = new DocumentBuilder()

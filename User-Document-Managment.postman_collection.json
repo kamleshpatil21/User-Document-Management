@@ -1,0 +1,649 @@
+{
+	"info": {
+		"_postman_id": "f7efe260-4c89-42ed-8736-469479b87ccb",
+		"name": "User-Document-Managment",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "14805127",
+		"_collection_link": "https://red-capsule-544641.postman.co/workspace/d7d96b60-3b45-4f46-8673-3203d031ac69/collection/14805127-f7efe260-4c89-42ed-8736-469479b87ccb?action=share&source=collection_link&creator=14805127"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Register",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"testuser@example.com\",\n  \"password\": \"password123\",\n  \"role\": \"viewer\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/auth/register",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "login",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"testuser@example.com\",\n  \"password\": \"password123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/auth/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						},
+						"description": "Generated from cURL: curl -X POST http://localhost:3000/auth/login \\\n-H \"Content-Type: application/json\" \\\n-d '{\n  \"email\": \"testuser@example.com\",\n  \"password\": \"password123\"\n}'\n"
+					},
+					"response": []
+				},
+				{
+					"name": "logout",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsInJvbGUiOiJ2aWV3ZXIiLCJpYXQiOjE3MzMwNTg3NzUsImV4cCI6MTczMzA2MjM3NX0.-YFaHxm__Msa64Q9LOJN28bICJvltLmjry_Wj68i2g4"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/api/auth/logout",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"auth",
+								"logout"
+							]
+						},
+						"description": "Generated from cURL: curl -X POST http://localhost:3000/auth/logout \\\n-H \"Authorization: Bearer YOUR_JWT_TOKEN\"\n"
+					},
+					"response": []
+				},
+				{
+					"name": "roles",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer YOUR_JWT_TOKEN"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/api/auth/roles",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"auth",
+								"roles"
+							]
+						},
+						"description": "Generated from cURL: curl -X POST http://localhost:3000/auth/roles \\\n-H \"Authorization: Bearer YOUR_JWT_TOKEN\"\n"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Documents",
+			"item": [
+				{
+					"name": "Get All Documents",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjQsInJvbGUiOiJhZG1pbiIsImlhdCI6MTczMzMzOTU1NiwiZXhwIjoxNzMzMzQzMTU2fQ.wNp2IXCSB0NItgWvoC_wlz2xpOoNEgB5HXBOZyFUWEI"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/api/documents",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"documents"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Documents By Id",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjQsInJvbGUiOiJhZG1pbiIsImlhdCI6MTczMzMzOTU1NiwiZXhwIjoxNzMzMzQzMTU2fQ.wNp2IXCSB0NItgWvoC_wlz2xpOoNEgB5HXBOZyFUWEI"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/api/documents/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"documents",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Documents",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjQsInJvbGUiOiJhZG1pbiIsImlhdCI6MTczMzMzOTU1NiwiZXhwIjoxNzMzMzQzMTU2fQ.wNp2IXCSB0NItgWvoC_wlz2xpOoNEgB5HXBOZyFUWEI"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/api/documents/32",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"documents",
+								"32"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Documents By Id Copy 2",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjQsInJvbGUiOiJhZG1pbiIsImlhdCI6MTczMzM0NDc4NiwiZXhwIjoxNzMzMzQ4Mzg2fQ.VqIdNZ7k-19wjj4qKVQLXLH5P54L-OZdpIywzE5Kz5c"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"kamlesh\",\n    \"size\": 2123,\n    \"type\": \"application/pdf\",\n    \"path\": \"test/kamlesh/kamlesh\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/documents/21",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"documents",
+								"21"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Upload Document",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjQsInJvbGUiOiJhZG1pbiIsImlhdCI6MTczMzMzOTU1NiwiZXhwIjoxNzMzMzQzMTU2fQ.wNp2IXCSB0NItgWvoC_wlz2xpOoNEgB5HXBOZyFUWEI"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "postman-cloud:///1ef6b6c9-fa95-4750-ba0f-11067cc61408"
+								},
+								{
+									"key": "",
+									"value": "",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "",
+									"value": "",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "",
+									"value": "",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/documents/upload",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"documents",
+								"upload"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Documents",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjQsInJvbGUiOiJhZG1pbiIsImlhdCI6MTczMzM0NDc4NiwiZXhwIjoxNzMzMzQ4Mzg2fQ.VqIdNZ7k-19wjj4qKVQLXLH5P54L-OZdpIywzE5Kz5c"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Updated Document Name\",\n    \"size\": 54321,\n    \"type\": \"application/pdf\",\n    \"path\": \"test/kamlesh/test\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/documents/21",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"documents",
+								"21"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Ingestion",
+			"item": [
+				{
+					"name": "trigger-operation",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjQsInJvbGUiOiJhZG1pbiIsImlhdCI6MTczMzMzOTU1NiwiZXhwIjoxNzMzMzQzMTU2fQ.wNp2IXCSB0NItgWvoC_wlz2xpOoNEgB5HXBOZyFUWEI"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"documentId\": \"12345\",\n  \"userId\": \"67890\",\n  \"metadata\": {\n    \"key1\": \"value1\",\n    \"key2\": \"value2\"\n  }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/ingestion/trigger-operation",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"ingestion",
+								"trigger-operation"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetIngestion",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjQsInJvbGUiOiJhZG1pbiIsImlhdCI6MTczMzMzOTU1NiwiZXhwIjoxNzMzMzQzMTU2fQ.wNp2IXCSB0NItgWvoC_wlz2xpOoNEgB5HXBOZyFUWEI"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/ingestion",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"ingestion"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetIngestionById",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjQsInJvbGUiOiJhZG1pbiIsImlhdCI6MTczMzMzOTU1NiwiZXhwIjoxNzMzMzQzMTU2fQ.wNp2IXCSB0NItgWvoC_wlz2xpOoNEgB5HXBOZyFUWEI"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/ingestion/21",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"ingestion",
+								"21"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetIngestionById Copy",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjQsInJvbGUiOiJhZG1pbiIsImlhdCI6MTczMzMzOTU1NiwiZXhwIjoxNzMzMzQzMTU2fQ.wNp2IXCSB0NItgWvoC_wlz2xpOoNEgB5HXBOZyFUWEI"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/ingestion/1/cancel",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"ingestion",
+								"1",
+								"cancel"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "GetALL",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjQsInJvbGUiOiJhZG1pbiIsImlhdCI6MTczMzMxNzQxNywiZXhwIjoxNzMzMzIxMDE3fQ.9W3TLp8NhhGHg8k-_g-RnuhnMX3URk51Xd4BIYWRxWg"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/api/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"users"
+							]
+						},
+						"description": "Generated from cURL: curl -X GET http://localhost:3000/users \\\n  -H \"Authorization: Bearer <YOUR_JWT_TOKEN>\"\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjQsInJvbGUiOiJhZG1pbiIsImlhdCI6MTczMzMyODU5OSwiZXhwIjoxNzMzMzMyMTk5fQ.4Xogyucr_Eyv7q6RiFpEG2iStm0e8Hy_rM9CWJlvDqE"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/api/users/3",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"users",
+								"3"
+							]
+						},
+						"description": "Generated from cURL: curl -X GET http://localhost:3000/users \\\n  -H \"Authorization: Bearer <YOUR_JWT_TOKEN>\"\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Create",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjQsInJvbGUiOiJhZG1pbiIsImlhdCI6MTczMzMyODU5OSwiZXhwIjoxNzMzMzMyMTk5fQ.4Xogyucr_Eyv7q6RiFpEG2iStm0e8Hy_rM9CWJlvDqE"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"kamlesh@examplem\",\n  \"phoneNumber\": \"+918618545563\",\n  \"userId\": 6\n\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"users"
+							]
+						},
+						"description": "Generated from cURL: curl -X GET http://localhost:3000/users \\\n  -H \"Authorization: Bearer <YOUR_JWT_TOKEN>\"\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Updateuser",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjQsInJvbGUiOiJhZG1pbiIsImlhdCI6MTczMzMyODU5OSwiZXhwIjoxNzMzMzMyMTk5fQ.4Xogyucr_Eyv7q6RiFpEG2iStm0e8Hy_rM9CWJlvDqE"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Nilesh\",\n  \"phoneNumber\": \"+918618545563\",\n  \"userId\": 98\n\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/users/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"users",
+								"1"
+							]
+						},
+						"description": "Generated from cURL: curl -X GET http://localhost:3000/users \\\n  -H \"Authorization: Bearer <YOUR_JWT_TOKEN>\"\n"
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "BASE_URL",
+			"value": "http://localhost:3000/api/"
+		}
+	]
+}

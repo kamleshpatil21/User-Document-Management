@@ -62,7 +62,7 @@ async function bootstrap() {
         forbidNonWhitelisted: true,
         transform: true,
     }));
-    app.setGlobalPrefix('api/v1');
+    app.setGlobalPrefix('api');
     const options = new swagger_1.DocumentBuilder()
         .setTitle('User Document Management API')
         .setDescription('API documentation for the User-Document-Management')

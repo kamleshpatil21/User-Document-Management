@@ -39,13 +39,20 @@ let DocumentsService = class DocumentsService {
     }
     async update(id, updateDocumentDto) {
         const document = await this.findOne(id);
+        if (!document) {
+            throw new common_1.NotFoundException(`Document with ID ${id} not found`);
+        }
         Object.assign(document, updateDocumentDto);
         return this.documentsRepository.save(document);
     }
     async remove(id) {
         const document = await this.findOne(id);
+        if (!document) {
+            throw new common_1.NotFoundException(`Document with ID ${id} not found`);
+        }
         (0, fs_1.unlinkSync)((0, path_1.join)(__dirname, '..', '..', document.path));
         await this.documentsRepository.remove(document);
+        return { message: `Document with ID ${id} Delete` };
     }
 };
 exports.DocumentsService = DocumentsService;

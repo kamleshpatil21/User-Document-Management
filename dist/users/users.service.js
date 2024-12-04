@@ -17,33 +17,68 @@ const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
 const typeorm_2 = require("typeorm");
 const user_entity_1 = require("../auth/entities/user.entity");
+const user_entity_2 = require("./entities/user.entity");
 let UsersService = class UsersService {
-    constructor(userRepository) {
+    constructor(UserDataRepository, userRepository) {
+        this.UserDataRepository = UserDataRepository;
         this.userRepository = userRepository;
     }
     findAll() {
-        return this.userRepository.find();
+        return this.UserDataRepository.find();
     }
     findOne(id) {
-        return this.userRepository.findOneBy({ id });
+        return this.UserDataRepository.findOneBy({ id });
     }
-    create(user) {
-        const newUser = this.userRepository.create(user);
-        return this.userRepository.save(newUser);
+    async create(createUserDataDto) {
+        const user = await this.userRepository.findOne({
+            where: { id: createUserDataDto.userId },
+        });
+        if (!user) {
+            throw new common_1.NotFoundException(`User with ID ${createUserDataDto.userId} not found`);
+        }
+        const newUserData = this.UserDataRepository.create({
+            ...createUserDataDto,
+            user,
+        });
+        return this.UserDataRepository.save(newUserData);
     }
     async update(id, updates) {
-        await this.userRepository.update(id, updates);
-        return this.userRepository.findOneBy({ id });
+        const existingUserData = await this.UserDataRepository.findOneBy({ id });
+        if (!existingUserData) {
+            throw new common_1.NotFoundException(`UserData with ID ${id} not found`);
+        }
+        if (updates.userId) {
+            const user = await this.userRepository.findOneBy({ id: updates.userId });
+            if (!user) {
+                throw new common_1.NotFoundException(`User with ID ${updates.userId} not found`);
+            }
+            updates = { ...updates, user };
+            delete updates.userId;
+        }
+        const result = await this.UserDataRepository.update(id, updates);
+        if (result.affected === 0) {
+            throw new common_1.NotFoundException(`Failed to update UserData with ID ${id}`);
+        }
+        return this.UserDataRepository.findOne({
+            where: { id },
+            relations: ['user'],
+        });
     }
     async remove(id) {
-        await this.userRepository.delete(id);
-        return { message: `User with ID ${id} deleted successfully` };
+        const existingUserData = await this.UserDataRepository.findOneBy({ id });
+        if (!existingUserData) {
+            throw new common_1.NotFoundException(`UserData with ID ${id} not found`);
+        }
+        await this.UserDataRepository.delete(id);
+        return { message: `UserData with ID ${id} deleted successfully` };
     }
 };
 exports.UsersService = UsersService;
 exports.UsersService = UsersService = __decorate([
     (0, common_1.Injectable)(),
-    __param(0, (0, typeorm_1.InjectRepository)(user_entity_1.User)),
-    __metadata("design:paramtypes", [typeorm_2.Repository])
+    __param(0, (0, typeorm_1.InjectRepository)(user_entity_2.UserData)),
+    __param(1, (0, typeorm_1.InjectRepository)(user_entity_1.User)),
+    __metadata("design:paramtypes", [typeorm_2.Repository,
+        typeorm_2.Repository])
 ], UsersService);
 //# sourceMappingURL=users.service.js.map

@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn } from 'typeorm';
 
 @Entity()
 export class Ingestion {
@@ -12,6 +12,6 @@ export class Ingestion {
   status: string;
 
 
-  @Column({ type: 'timestamp', nullable: true })
-  completedAt: Date;
+  @CreateDateColumn({ type: "timestamptz", default: () => "CURRENT_TIMESTAMP" })
+  createDateTime: Date;
 }

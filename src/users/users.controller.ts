@@ -5,6 +5,8 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { User } from '../auth/entities/user.entity';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBody, ApiBearerAuth } from '@nestjs/swagger';
+import { CreateUserDataDto } from './dto/create-userdata.dto';
+import { UpdateUserDataDto } from './dto/update-user-data.dto.ts';
 
 @ApiTags('Users') // Grouping the endpoints under the 'Users' tag in Swagger
 @Controller('users')
@@ -45,7 +47,7 @@ export class UsersController {
   @ApiResponse({ status: 400, description: 'Bad request' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({ status: 403, description: 'Forbidden, admin access required' })
-  create(@Body() createUserDto: Partial<User>) {
+  create(@Body() createUserDto: CreateUserDataDto) {
 
 
     try {
@@ -73,7 +75,7 @@ export class UsersController {
   @ApiResponse({ status: 400, description: 'Bad request' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({ status: 403, description: 'Forbidden, admin access required' })
-  update(@Param('id') id: number, @Body() updates: Partial<User>) {
+  update(@Param('id') id: number, @Body() updates: UpdateUserDataDto) {
     return this.usersService.update(id, updates);
   }
 

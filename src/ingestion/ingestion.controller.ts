@@ -3,11 +3,14 @@ import { IngestionService } from './ingestion.service';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBody } from '@nestjs/swagger';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { Ingestion } from './entities/ingestion.entity';
+import { Repository } from 'typeorm';
 
 @ApiTags('Ingestion') // Grouping the endpoints under the 'Ingestion' tag in Swagger
 @Controller('ingestion')
 export class IngestionController {
-  constructor(private readonly ingestionService: IngestionService) {}
+  constructor(private readonly ingestionService: IngestionService) {
+  }
 
   @Post('trigger-operation')
   @UseGuards(JwtAuthGuard, RolesGuard)
@@ -100,7 +103,7 @@ export class IngestionController {
   /**
    * Cancel a specific ingestion process by ID
    */
-  @Put(':id/cancel')
+  @Put('cancel/:id')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @ApiOperation({ summary: 'Cancel a specific ingestion process' }) // Operation summary
   @ApiParam({ name: 'id', description: 'ID of the ingestion process to cancel' }) // Parameter description

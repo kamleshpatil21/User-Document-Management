@@ -8,5 +8,7 @@ export declare class DocumentsController {
     findOne(id: number): Promise<import("./entities/document.entity").Document>;
     create(file: Express.Multer.File, createDocumentDto: CreateDocumentDto): Promise<import("./entities/document.entity").Document>;
     update(id: number, updateDocumentDto: UpdateDocumentDto): Promise<import("./entities/document.entity").Document>;
-    remove(id: number): Promise<void>;
+    remove(id: number): Promise<{
+        message: string;
+    }>;
 }

@@ -22,12 +22,13 @@ const typeorm_2 = require("typeorm");
 const ingestion_entity_1 = require("./entities/ingestion.entity");
 const axios_1 = __importDefault(require("axios"));
 let IngestionService = class IngestionService {
-    constructor(entityManager) {
-        this.entityManager = entityManager;
+    constructor(IngestionRepository) {
+        this.IngestionRepository = IngestionRepository;
     }
     async triggerIngestionOperation(data) {
         try {
             console.log('Triggering ingestion operation for document ID:', data.documentId);
+            await this.IngestionRepository.save(data);
             const response = await axios_1.default.post('http://python-service/ingest', {
                 documentId: data.documentId,
                 userId: data.userId,
@@ -46,23 +47,24 @@ let IngestionService = class IngestionService {
         }
     }
     async getIngestionStatus(id) {
-        const ingestion = await this.entityManager.findOne(ingestion_entity_1.Ingestion, { where: { id } });
+        const ingestion = await this.IngestionRepository.findOne({ where: { id } });
         if (!ingestion) {
-            throw new Error('Ingestion not found');
+            throw new common_1.NotFoundException(`Ingestion with ID ${id} not found`);
         }
         return ingestion;
     }
     async cancelIngestion(id) {
-        const ingestion = await this.entityManager.findOne(ingestion_entity_1.Ingestion, { where: { id } });
+        const ingestion = await this.IngestionRepository.findOne({ where: { id } });
         if (!ingestion) {
-            throw new Error('Ingestion not found');
+            throw new common_1.NotFoundException(`Ingestion with ID ${id} not found`);
         }
         ingestion.status = 'Cancelled';
-        await this.entityManager.save(ingestion);
+        await this.IngestionRepository.save(ingestion);
+        return { message: `Status changed to Cancel for id ${id}` };
     }
     async getAllIngestionProcesses() {
         try {
-            const ingestion = await this.entityManager.find(ingestion_entity_1.Ingestion);
+            const ingestion = await this.IngestionRepository.find();
             return ingestion;
         }
         catch (error) {
@@ -74,7 +76,7 @@ let IngestionService = class IngestionService {
 exports.IngestionService = IngestionService;
 exports.IngestionService = IngestionService = __decorate([
     (0, common_1.Injectable)(),
-    __param(0, (0, typeorm_1.InjectEntityManager)()),
-    __metadata("design:paramtypes", [typeorm_2.EntityManager])
+    __param(0, (0, typeorm_1.InjectRepository)(ingestion_entity_1.Ingestion)),
+    __metadata("design:paramtypes", [typeorm_2.Repository])
 ], IngestionService);
 //# sourceMappingURL=ingestion.service.js.map

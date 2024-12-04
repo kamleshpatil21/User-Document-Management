@@ -1,7 +1,7 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { Injectable, NotFoundException, OnModuleInit } from '@nestjs/common';
 import { Redis } from 'ioredis';
-import { InjectEntityManager } from '@nestjs/typeorm';
-import { EntityManager } from 'typeorm';
+import { InjectEntityManager, InjectRepository } from '@nestjs/typeorm';
+import { EntityManager, Repository } from 'typeorm';
 import { Ingestion } from './entities/ingestion.entity'; 
 import axios from 'axios'; 
 
@@ -9,8 +9,8 @@ import axios from 'axios';
 export class IngestionService  {
   
       constructor(
-    
-        @InjectEntityManager() private readonly entityManager: EntityManager
+        @InjectRepository(Ingestion)
+        private readonly IngestionRepository: Repository<Ingestion>
       ) {}
     
      
@@ -18,7 +18,7 @@ export class IngestionService  {
     try {
       // This can be any custom logic to trigger ingestion, e.g., API call, file processing, etc.
       console.log('Triggering ingestion operation for document ID:', data.documentId);
-
+      await this.IngestionRepository.save(data);
       // Example: Make an API call to a Python service or some other ingestion service
       const response = await axios.post('http://python-service/ingest', {
         documentId: data.documentId,
@@ -40,27 +40,30 @@ export class IngestionService  {
 
   // Method to retrieve the status of an ingestion process
   async getIngestionStatus(id: number) {
-    const ingestion = await this.entityManager.findOne(Ingestion, { where: { id } });
+    const ingestion = await this.IngestionRepository.findOne( { where: { id } });
     if (!ingestion) {
-      throw new Error('Ingestion not found');
+    
+        throw new NotFoundException(`Ingestion with ID ${id} not found`);
+      
     }
     return ingestion;
   }
 
   // Method to cancel an ingestion process (if needed)
   async cancelIngestion(id: number) {
-    const ingestion = await this.entityManager.findOne(Ingestion, { where: { id } });
+    const ingestion = await this.IngestionRepository.findOne( { where: { id } });
     if (!ingestion) {
-      throw new Error('Ingestion not found');
+      throw new NotFoundException(`Ingestion with ID ${id} not found`);
     }
 
     // Mark as cancelled
     ingestion.status = 'Cancelled';
-    await this.entityManager.save(ingestion);
+    await this.IngestionRepository.save(ingestion);
+    return {  message:`Status changed to Cancel for id ${id}` }
   }
   async getAllIngestionProcesses() {
     try {
-      const ingestion = await this.entityManager.find(Ingestion); // Fetch all ingestion processes
+      const ingestion = await this.IngestionRepository.find(); // Fetch all ingestion processes
       return ingestion;
     } catch (error) {
       console.error('Error fetching ingestion processes:', error);

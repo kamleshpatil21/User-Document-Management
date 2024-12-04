@@ -42,6 +42,7 @@ let DocumentsController = class DocumentsController {
         return document;
     }
     async update(id, updateDocumentDto) {
+        ("consles");
         return this.documentsService.update(id, updateDocumentDto);
     }
     async remove(id) {

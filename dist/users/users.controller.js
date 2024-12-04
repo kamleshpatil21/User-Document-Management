@@ -20,6 +20,8 @@ const jwt_auth_guard_1 = require("../auth/guards/jwt-auth.guard");
 const roles_guard_1 = require("../auth/guards/roles.guard");
 const user_entity_1 = require("../auth/entities/user.entity");
 const swagger_1 = require("@nestjs/swagger");
+const create_userdata_dto_1 = require("./dto/create-userdata.dto");
+const update_user_data_dto_ts_1 = require("./dto/update-user-data.dto.ts");
 let UsersController = class UsersController {
     constructor(usersService) {
         this.usersService = usersService;
@@ -75,7 +77,7 @@ __decorate([
     (0, swagger_1.ApiResponse)({ status: 403, description: 'Forbidden, admin access required' }),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [create_userdata_dto_1.CreateUserDataDto]),
     __metadata("design:returntype", void 0)
 ], UsersController.prototype, "create", null);
 __decorate([
@@ -96,7 +98,7 @@ __decorate([
     __param(0, (0, common_1.Param)('id')),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number, Object]),
+    __metadata("design:paramtypes", [Number, update_user_data_dto_ts_1.UpdateUserDataDto]),
     __metadata("design:returntype", void 0)
 ], UsersController.prototype, "update", null);
 __decorate([

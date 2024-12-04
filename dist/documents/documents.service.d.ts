@@ -9,5 +9,7 @@ export declare class DocumentsService {
     findAll(): Promise<Document[]>;
     findOne(id: number): Promise<Document>;
     update(id: number, updateDocumentDto: UpdateDocumentDto): Promise<Document>;
-    remove(id: number): Promise<void>;
+    remove(id: number): Promise<{
+        message: string;
+    }>;
 }

@@ -4,4 +4,5 @@ export declare class Document {
     size: number;
     type: string;
     path: string;
+    createDateTime: Date;
 }

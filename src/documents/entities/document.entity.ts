@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn } from 'typeorm';
 
 @Entity('documents')
 export class Document {
@@ -16,4 +16,7 @@ export class Document {
 
   @Column()
   path: string;
+
+  @CreateDateColumn({ type: "timestamptz", default: () => "CURRENT_TIMESTAMP" })
+  createDateTime: Date;
 }

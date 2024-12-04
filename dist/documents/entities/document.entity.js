@@ -34,6 +34,10 @@ __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", String)
 ], Document.prototype, "path", void 0);
+__decorate([
+    (0, typeorm_1.CreateDateColumn)({ type: "timestamptz", default: () => "CURRENT_TIMESTAMP" }),
+    __metadata("design:type", Date)
+], Document.prototype, "createDateTime", void 0);
 exports.Document = Document = __decorate([
     (0, typeorm_1.Entity)('documents')
 ], Document);

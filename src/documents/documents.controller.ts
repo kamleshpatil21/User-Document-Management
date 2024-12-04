@@ -19,6 +19,7 @@ import {
   import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
   import { ApiTags, ApiOperation, ApiResponse, ApiBody, ApiBearerAuth } from '@nestjs/swagger';
   
+
   @ApiTags('Documents') // Swagger Grouping Tag
   @Controller('documents')
   export class DocumentsController {
@@ -78,6 +79,7 @@ import {
       @UploadedFile() file: Express.Multer.File,
       @Body() createDocumentDto: CreateDocumentDto,
     ) {
+     
       const document = await this.documentsService.create({
         ...createDocumentDto,
         name: file.originalname,
@@ -103,6 +105,7 @@ import {
       @Param('id') id: number,
       @Body() updateDocumentDto: UpdateDocumentDto,
     ) {
+  
       return this.documentsService.update(id, updateDocumentDto);
     }
   

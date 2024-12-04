@@ -122,7 +122,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], IngestionController.prototype, "findOne", null);
 __decorate([
-    (0, common_1.Put)(':id/cancel'),
+    (0, common_1.Put)('cancel/:id'),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
     (0, swagger_1.ApiOperation)({ summary: 'Cancel a specific ingestion process' }),
     (0, swagger_1.ApiParam)({ name: 'id', description: 'ID of the ingestion process to cancel' }),

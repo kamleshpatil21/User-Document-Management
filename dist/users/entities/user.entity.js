@@ -9,28 +9,34 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Ingestion = void 0;
+exports.UserData = void 0;
 const typeorm_1 = require("typeorm");
-let Ingestion = class Ingestion {
+const user_entity_1 = require("../../auth/entities/user.entity");
+let UserData = class UserData {
 };
-exports.Ingestion = Ingestion;
+exports.UserData = UserData;
 __decorate([
     (0, typeorm_1.PrimaryGeneratedColumn)(),
     __metadata("design:type", Number)
-], Ingestion.prototype, "id", void 0);
+], UserData.prototype, "id", void 0);
 __decorate([
     (0, typeorm_1.Column)(),
-    __metadata("design:type", Number)
-], Ingestion.prototype, "documentId", void 0);
-__decorate([
-    (0, typeorm_1.Column)({ default: 'Pending' }),
     __metadata("design:type", String)
-], Ingestion.prototype, "status", void 0);
+], UserData.prototype, "name", void 0);
 __decorate([
-    (0, typeorm_1.CreateDateColumn)({ type: "timestamptz", default: () => "CURRENT_TIMESTAMP" }),
+    (0, typeorm_1.Column)(),
+    __metadata("design:type", String)
+], UserData.prototype, "phoneNumber", void 0);
+__decorate([
+    (0, typeorm_1.ManyToOne)(() => user_entity_1.User, (user) => user.id),
+    (0, typeorm_1.JoinColumn)({ name: 'userId' }),
+    __metadata("design:type", user_entity_1.User)
+], UserData.prototype, "user", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' }),
     __metadata("design:type", Date)
-], Ingestion.prototype, "createDateTime", void 0);
-exports.Ingestion = Ingestion = __decorate([
+], UserData.prototype, "createDateTime", void 0);
+exports.UserData = UserData = __decorate([
     (0, typeorm_1.Entity)()
-], Ingestion);
-//# sourceMappingURL=ingestion.entity.js.map
+], UserData);
+//# sourceMappingURL=user.entity.js.map
